@@ -1,6 +1,6 @@
 # Paddle对Pruning以及Mobilenet的支持
 
-### 关于对pruning 以及mobilenet的模型测试可以到 https://github.com/NHZlX/PaddleModelZoo 下载
+### 关于对pruning以及mobilenet的模型测试可以到 https://github.com/NHZlX/PaddleModelZoo 下载
 <font color=gray size=5>Static pruning</font></br>
 <font color=gray size=5>Dynamic pruning</font></br>
 <font color=gray size=5>Sparse forward acceleration</font></br>
@@ -67,10 +67,10 @@ from paddle.v2.attr import Hook
 from paddle.v2.attr import ParamAttr
 
 def Net(img):
-	#inter_pass=3 end_pass=60 为默认参数
-	#每inter_pass次pass变化一次稀疏度，一共变化end_pass/inter_pass = 20次, 最终达到稀疏度0.8
-	hk = Hook('dynamic_pruning', upper_bound=0.8, 
-		inter_pass=3, end_pass=60)
+	#interval_pass=3 end_pass=60 为默认参数
+	#每interval_pass次pass变化一次稀疏度，一共变化end_pass/interval_pass = 20次, 最终达到稀疏度0.8
+	hk = Hook('dynamic_pruning', sparsity_upper_bound=0.8, 
+		interval_pass=3, end_pass=60)
 	net = paddle.layer.img_conv(
 	     input=net, filter_size=3, 
 	     num_filters=512, stride=1, 
@@ -78,7 +78,7 @@ def Net(img):
 	     param_attr = ParamAttr(update_hooks = hk))
 	
 	#表明最终达到0.95的稀疏度，inter_pass和end_pass采用默认值
-	hk1 = Hook('dynamic_pruning', upper_bound=0.95) 
+	hk1 = Hook('dynamic_pruning', sparsity_upper_bound=0.95) 
 	out = paddle.layer.fc(
         input=net, size=classdim, act=paddle.activation.Softmax(), 
         param_attr = ParamAttr(update_hooks=hk1))
@@ -113,7 +113,7 @@ def Net(img):
 | 94.4%     | 95.3% | 
 
 ###Feature
-特点是，`sparsity_ratio`变化程log曲线，前期变化较大，到后期网络参数都比较重要，如果后期大量的cut掉参数，网络比较难`fine-tune`到好的效果，所以后期cut参数幅度很小。第二，整个过程为一个阶段，中间不需要重新启动网络。
+`sparsity_ratio`变化程log曲线，前期变化较大，到后期网络参数都比较重要，如果后期大量的cut掉参数，网络比较难`fine-tune`到好的效果，所以后期cut参数幅度很小。第二，整个过程为一个阶段，中间不需要重新启动网络。
 
 ## Sparse Forward acceleration
 
