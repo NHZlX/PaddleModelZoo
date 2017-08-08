@@ -1,9 +1,5 @@
-import sys
-import struct
 import numpy as np
-import os
 import gzip
-import shutil
 
 import paddle.v2 as paddle
 from paddle.v2.topology import Topology
@@ -13,13 +9,11 @@ class Merge_BN:
 
     def __init__(self, source_net, source_model, dest_model):
         self.source_proto = Topology(source_net).proto()
-        #self.dest_proto = Topology(dest_net).proto()
         self.source_layers = self.source_proto.layers
 
         with gzip.open(dest_model) as f:
             self.dest_param = paddle.parameters.Parameters.from_tar(f)
 
-        #self.dest_param = paddle.parameters.create(dest_net)
         with gzip.open(source_model) as f:
             self.source_param = paddle.parameters.Parameters.from_tar(f)
 
@@ -27,6 +21,9 @@ class Merge_BN:
 
 
     def fuse_param(self, current_layer, bn_layer):
+        '''
+        fuse the bn_layer' parameters to current_layer
+        '''
         param_name = current_layer.inputs[0].input_parameter_name
         bias_name = current_layer.bias_parameter_name
         assert param_name, 'This layer(fc or exconv) should have parameters'
@@ -67,6 +64,9 @@ class Merge_BN:
             self.dest_param.set(bias_name, bias.reshape(bias_shape))
 
     def save_layer_without_bn(self, current_layer):
+        '''
+        deal with the layer which has parameter but without batch_norm
+        '''
         param_name = current_layer.inputs[0].input_parameter_name
         bias_name = current_layer.bias_parameter_name
         assert param_name, 'This layer(fc or exconv) should have parameters'
@@ -83,6 +83,10 @@ class Merge_BN:
                 self.dest_param.set(bias_name, bias)
 
     def merge(self):
+        '''
+        merge batch norm 
+        Currently, the default layer with parameters are fc and exconv layers.
+        '''
         layer_num = len(self.source_layers)
         i = 0
 

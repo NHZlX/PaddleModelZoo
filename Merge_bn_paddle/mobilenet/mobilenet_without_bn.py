@@ -18,13 +18,15 @@ def conv_bn_layer(input, filter_size, num_filters,
                          stride=stride,
                          padding=padding,
                          groups=num_groups,
+                        # !!! the act in the network with batch norm 
+                        # is paddle.activation.Linear()
                          act=active_type,
-                         #act=paddle.activation.Linear(),
-                         #bias_attr=False
-                         #act=active_type,
+                        # !!! the bias_attr in origin network is False
                          bias_attr=True)
+
+    # !!! we have deleted the batch_norm layer here.
     return tmp
-                            #use_global_stats=False,
+
 def depthwise_separable(input, num_filters1, num_filters2, num_groups, stride):
     """
     """
