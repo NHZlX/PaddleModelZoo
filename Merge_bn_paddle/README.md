@@ -26,6 +26,6 @@ For MORE details about batch normalization，see [here](https://arxiv.org/abs/15
 
 
 ### Note!
-1. 再进行融合的之前，得提前准备不带batch norm的模型配置，即 `./mobilenet/mobilenet_without_bn.py`, 配置不带batch norm的模型要注意三点， 第一，新的模型没有batch norm 层，第二，每个带batch norm的参数层（fc 或conv）， 要将`bias_attr`设置为True， 第三，每个带batch norm的参数层（fc 或 conv）将act属性(默认为`paddle.activation.Linear()`)设置为同batch norm相同的act，一般为`paddle.activation.Relu()`
+1. 在进行融合之前，得提前准备不带batch norm的模型配置，即 `./mobilenet/mobilenet_without_bn.py`, 配置不带batch norm的模型要注意三点， 第一，新的模型没有batch norm 层，第二，每个带batch norm的参数层（fc 或conv）， 要将`bias_attr`设置为True， 第三，每个带batch norm的参数层（fc 或 conv）将act属性(默认为`paddle.activation.Linear()`)设置为同batch norm相同的act(激励函数)，一般为`paddle.activation.Relu()`
 
 2. 在mobilenet 和resnet上是ok的，其他的还没进行测试
