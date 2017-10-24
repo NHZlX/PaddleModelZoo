@@ -181,7 +181,7 @@ def depthwise_conv_bn_layer(input, filter_size, num_filters,
 
 
 |--| mobilenet |mobilenet pruning| 
-|---| --- |---|---|
-|accuracy|  0.9716    |0.970 |
+|---|---|---|
+|accuracy| 0.9716 |0.970 |
 |model size| 12M |  4.3M |
 |Download|[Download from BaiduCloud](https://pan.baidu.com/s/1geHkrw3)|[Download from BaiduCloud](https://pan.baidu.com/s/1ge8wOp1)|
